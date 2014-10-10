@@ -1,0 +1,178 @@
+# -*- mode: python -*-
+# Enemy Territory build script
+# TTimo <ttimo@idsoftware.com>
+# http://scons.sourceforge.net
+
+import sys, os
+import scons_utils
+
+Import( 'GLOBALS' )
+Import( GLOBALS )
+
+server_string = """
+sv_ccmds.c
+sv_client.c
+sv_game.c
+sv_init.c
+sv_main.c
+sv_net_chan.c
+sv_snapshot.c
+sv_world.c
+sv_omnibots.c
+sv_memory.c
+sv_precomp.c
+sv_polygondebug.c
+sv_script.c
+sv_log.c
+sv_libvar.c"""
+
+server_list = scons_utils.BuildList( 'server', server_string )
+
+qcommon_string = """
+cm_load.c
+cm_patch.c
+cm_polylib.c
+cm_test.c
+cm_trace.c
+cmd.c
+common.c
+cvar.c
+files.c
+huffman.c
+md4.c
+msg.c
+net_chan.c
+unzip.c
+vm.c
+vm_interpreted.c"""
+
+if ( cpu == 'x86' ):
+	qcommon_string += " vm_x86.c"
+
+qcommon_list = scons_utils.BuildList( 'qcommon', qcommon_string )
+
+client_string = """
+snd_dma.c
+"""
+
+client_list = scons_utils.BuildList( 'client', client_string )
+
+linux_sources = [
+        'unix/linux_signals.c',
+        'unix/unix_main.c',
+        'unix/unix_net.c',
+        'unix/unix_shared.c',
+        'game/q_shared.c',
+        'game/q_math.c',
+#        'unix/matha.S'
+]
+
+linux_full_sources = [
+        'unix/linux_glimp.c',
+        'unix/linux_qgl.c',
+        'unix/linux_snd.c',
+        'unix/linux_joystick.c',
+#        'unix/snd_mixa.S'
+]
+
+mac_sources = [
+	'game/q_shared.c',
+	'game/q_math.c',
+	'mac/mac_main.cpp',
+	'mac/mac_input.cpp',
+	'mac/mac_glimp.cpp',
+	'mac/mac_files.cpp',
+	'mac/mac_net.cpp',
+	'mac/mac_console.c',
+	'mac/mac_snddma.c',
+	'mac/CarbonMouse.cpp',
+	'mac/mac_event.cpp',
+#	'mac/HID Manager/HID_Configure.c',
+#	'mac/HID Manager/HID_CFM.c',
+	'mac/MacPrefs.cpp',
+	'mac/PickMonitor/pickmonitor.cpp',
+	'mac/PickMonitor/userpane.cpp',
+	'mac/mac_qgl.c',
+	'mac/mac_specific.cpp',
+	'mac/AGLUtils.cpp',
+	'mac/CDrawSprocket.cpp'
+]
+
+win32_sources = [
+	'win32/win_main.c',
+	'win32/win_net.c',
+	'win32/win_shared.c',
+	'win32/win_wndproc.c',
+	'win32/win_syscon.c',
+        'game/q_shared.c',
+        'game/q_math.c',
+]
+
+win32_full_sources = [
+	'win32/win_input.c',
+	'win32/win_glimp.c',
+	'win32/win_qgl.c',
+	'win32/win_gamma.c',
+	'win32/win_snd.c',
+]
+
+if ( g_os == 'Linux' ):
+	nasm_env = Environment( tools = [ 'nasm' ] )
+	nasm_env['ASFLAGS'] = '-f elf'
+	snapvector = nasm_env.StaticObject( 'unix/snapvector.asm' )
+
+	# gas assembly, with preprocessing
+	gas_env = Environment( tools = [ 'gcc', 'gas' ] )
+	gas_env.Append( CPPDEFINES = [ 'ELF' ] )
+	gas_env.Append( ASFLAGS = [ '-m32', '-x', 'assembler-with-cpp' ] )
+	matha = gas_env.StaticObject( 'unix/matha.spp' )
+        snd_mixa = gas_env.StaticObject( 'unix/snd_mixa.spp' )
+
+local_env = g_env.Clone()
+
+if ( g_os == 'Linux' ):
+	local_env.Append( LIBS = [ 'dl' ] )
+	if ( local_dedicated == 0 ):
+		local_env.Append( LIBS = [ 'X11', 'Xext', 'm' ] )
+		local_env.Append( LIBPATH = [ '/usr/X11R6/lib' ] )
+		local_env.Append( CPPPATH = [ 'curl-7.12.2/include' ] )
+	else:
+		local_env.Append( CPPDEFINES = [ 'DEDICATED' ] )
+		local_env.Append( LIBS = [ 'm' ] )
+
+	if gcc3 == 0:
+		g_env.Append(LINKFLAGS=[ os.popen( g_env['CXX'] + ' -print-file-name=libstdc++.a' ).read().rstrip() ])
+	else:
+		local_env['ENV']['CC'] = g_env['CC']
+		local_env['LINK'] = 'unix/staticlinkcpp.sh'
+elif ( g_os == 'win32' ):
+	local_env.Append( LIBS = [ 'm', 'winmm', 'wsock32', 'gdi32', 'ole32', 'iphlpapi' ] )
+	if ( local_dedicated == 0 ):
+		local_env.Append( LIBS = [ 'dinput', 'dsound' ] )
+		local_env.Append( CPPPATH = [ 'curl-7.12.2/include' ] )
+	else:
+		local_env.Append( CPPDEFINES = [ 'DEDICATED' ] )
+	local_env['LINK'] = g_env['CXX']
+elif ( g_os == 'Darwin' ):
+	local_env.Append( LINKFLAGS = [ '-framework', 'AGL', '-framework', 'OpenGL', '-framework', 'Carbon', '-framework', 'IOKit', '-framework', 'DrawSprocket', '-lcurl' ] )
+
+if ( MASTER != '' ):
+	local_env.Append( CPPDEFINES = [ 'MASTER_SERVER_NAME=\\"%s\\"' % MASTER ] )
+
+source_list = server_list + qcommon_list + client_list
+if ( g_os == 'Linux' ):
+	source_list += linux_sources + snapvector + matha
+elif ( g_os == 'win32' ):
+	source_list += win32_sources
+elif ( g_os == 'Darwin' ):
+	if ( BUILD == 'release' ):
+		local_env.Append( CPPFLAGS = [ '-include', 'mac/MacPrefix.h' ] )
+	else:
+		local_env.Append( CPPFLAGS = [ '-include', 'mac/MacPrefixDebug.h' ] )
+	mac_objects = []
+	for i in mac_sources:
+		mac_objects.append( local_env.StaticObject( i ) )
+	source_list += mac_objects
+
+ret = local_env.Program( target = 'et', source = source_list )
+Return( 'ret' )

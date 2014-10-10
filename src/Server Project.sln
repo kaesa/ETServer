@@ -1,0 +1,68 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dedicated", "wolf.vcproj", "{B604B554-38D6-4BC8-9F7F-D6BC8719A653}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Dedicated|Win32 = Debug Dedicated|Win32
+		Debug|Win32 = Debug|Win32
+		Release Dedicated|Win32 = Release Dedicated|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Debug Dedicated|Win32.ActiveCfg = Debug Dedicated|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Debug Dedicated|Win32.Build.0 = Debug Dedicated|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Debug|Win32.Build.0 = Debug|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Release Dedicated|Win32.ActiveCfg = Release Dedicated|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Release Dedicated|Win32.Build.0 = Release Dedicated|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Release|Win32.ActiveCfg = Release|Win32
+		{B604B554-38D6-4BC8-9F7F-D6BC8719A653}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 8
+		SccProjectUniqueName0 = splines\\Splines.vcproj
+		SccProjectName0 = \u0022$/Wolfenstein\u0020MP/src/splines\u0022,\u0020ENNAAAAA
+		SccLocalPath0 = splines
+		SccProvider0 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName1 = botlib\\botlib.vcproj
+		SccProjectName1 = \u0022$/Wolfenstein\u0020MP/src/botlib\u0022,\u0020FTMAAAAA
+		SccLocalPath1 = botlib
+		SccProvider1 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName2 = cgame\\cgame.vcproj
+		SccProjectName2 = \u0022$/Wolfenstein\u0020MP/src/cgame\u0022,\u0020HTMAAAAA
+		SccLocalPath2 = cgame
+		SccProvider2 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName3 = extractfuncs\\extractfuncs.vcproj
+		SccProjectName3 = \u0022$/Wolf5/src/extractfuncs\u0022,\u0020JTMAAAAA
+		SccLocalPath3 = extractfuncs
+		SccProvider3 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName4 = game\\game.vcproj
+		SccProjectName4 = \u0022$/Wolfenstein\u0020MP/src/game\u0022,\u0020LTMAAAAA
+		SccLocalPath4 = game
+		SccProvider4 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName5 = renderer\\renderer.vcproj
+		SccProjectName5 = \u0022$/Wolfenstein\u0020MP/src/renderer\u0022,\u0020OTMAAAAA
+		SccLocalPath5 = renderer
+		SccProvider5 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName6 = ui\\ui.vcproj
+		SccProjectName6 = \u0022$/Wolfenstein\u0020MP/src/ui\u0022,\u0020QTMAAAAA
+		SccLocalPath6 = ui
+		SccProvider6 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+		SccProjectUniqueName7 = wolf.vcproj
+		SccProjectName7 = \u0022$/Wolfenstein\u0020MP/src\u0022,\u0020DTMAAAAA
+		SccLocalPath7 = .
+		SccProvider7 = MSSCCI:NXN\u0020alienbrain
+		CanCheckoutShared = false
+	EndGlobalSection
+EndGlobal
