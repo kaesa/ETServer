@@ -838,7 +838,11 @@ qboolean SV_OOBFlooding(netadr_t from, msg_t *msg)
 
 	/* Check if the IP is already in the system, if so ++ and return */
 	for(i = 0; i < ddosSize; i++) {
-		if (from.ip[0] == ddos[i].ip.ip[0] || from.ip[1] == ddos[i].ip.ip[1] || from.ip[2] == ddos[i].ip.ip[2] || from.ip[3] == ddos[i].ip.ip[3]){
+		if( (from.ip[0] == ddos[i].ip.ip[0]) 
+			&& (from.ip[1] == ddos[i].ip.ip[1]) 
+			&& (from.ip[2] == ddos[i].ip.ip[2]) 
+			&& (from.ip[3] == ddos[i].ip.ip[3])
+			){
 			//We exist!
 			if( (ddos[i].someStatus == 1) && (timeNow - ddos[i].lastReq) > sv_AF_OOBRestTime->integer ){
 				ddos[i].firstReq = timeNow;
