@@ -487,7 +487,7 @@ vm_t *VM_Create( const char *module, int ( *systemCalls )(int *),
 		}
 		return NULL;
 	}
-
+/* Interpreted dlls
 	// load the image
 	Com_sprintf( filename, sizeof( filename ), "vm/%s.qvm", vm->name );
 	Com_Printf( "Loading vm file %s.\n", filename );
@@ -558,7 +558,7 @@ vm_t *VM_Create( const char *module, int ( *systemCalls )(int *),
 	vm->stackBottom = vm->programStack - STACK_SIZE;
 
 	Com_Printf( "%s loaded in %d bytes on the hunk\n", module, remaining - Hunk_MemoryRemaining() );
-
+*/
 	return vm;
 }
 
@@ -703,11 +703,12 @@ int QDECL VM_Call( vm_t *vm, int callnum, ... ) {
 							( &callnum )[4], ( &callnum )[5], ( &callnum )[6], ( &callnum )[7],
 							( &callnum )[8],  ( &callnum )[9],  ( &callnum )[10],  ( &callnum )[11],  ( &callnum )[12] );
 #endif
-	} else if ( vm->compiled ) {
+	}/*Q3 interpreted dlls
+	else if ( vm->compiled ) {
 		r = VM_CallCompiled( vm, &callnum );
 	} else {
 		r = VM_CallInterpreted( vm, &callnum );
-	}
+	}*/
 
 	if ( oldVM != NULL ) { // bk001220 - assert(currentVM!=NULL) for oldVM==NULL
 		currentVM = oldVM;

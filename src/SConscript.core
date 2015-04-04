@@ -116,7 +116,7 @@ win32_full_sources = [
 	'win32/win_snd.c',
 ]
 
-if ( g_os == 'Linux' ):
+if ( g_os == 'Linux' or g_os == 'FreeBSD' ):
 	nasm_env = Environment( tools = [ 'nasm' ] )
 	nasm_env['ASFLAGS'] = '-f elf'
 	snapvector = nasm_env.StaticObject( 'unix/snapvector.asm' )
@@ -145,6 +145,16 @@ if ( g_os == 'Linux' ):
 	else:
 		local_env['ENV']['CC'] = g_env['CC']
 		local_env['LINK'] = 'unix/staticlinkcpp.sh'
+elif ( g_os == 'FreeBSD' ):
+	#local_env.Append( LIBS = [ 'dl' ] )
+	if ( local_dedicated == 0 ):
+		local_env.Append( LIBS = [ 'X11', 'Xext', 'm' ] )
+		local_env.Append( LIBPATH = [ '/usr/X11R6/lib' ] )
+		local_env.Append( CPPPATH = [ 'curl-7.12.2/include' ] )
+	else:
+		local_env.Append( CPPDEFINES = [ 'DEDICATED' ] )
+		local_env.Append( LIBS = [ 'm' ] )
+	g_env.Append(LINKFLAGS=[ os.popen( g_env['CXX'] + ' -print-file-name=libc++.a' ).read().rstrip() ])
 elif ( g_os == 'win32' ):
 	local_env.Append( LIBS = [ 'm', 'winmm', 'wsock32', 'gdi32', 'ole32', 'iphlpapi' ] )
 	if ( local_dedicated == 0 ):
@@ -161,6 +171,8 @@ if ( MASTER != '' ):
 
 source_list = server_list + qcommon_list + client_list
 if ( g_os == 'Linux' ):
+	source_list += linux_sources + snapvector + matha
+elif ( g_os == 'FreeBSD' ):
 	source_list += linux_sources + snapvector + matha
 elif ( g_os == 'win32' ):
 	source_list += win32_sources
