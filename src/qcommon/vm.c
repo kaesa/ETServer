@@ -332,7 +332,8 @@ Dlls will call this directly
 ============
 */
 int QDECL VM_DllSyscall( int arg, ... ) {
-#if ( ( defined __linux__ ) && ( defined __powerpc__ ) ) //|| (defined MACOS_X)
+#if ( ( defined __linux__ ) && ( defined __powerpc__ ) ) || (defined __FreeBSD__) //|| (defined MACOS_X)
+//#pragma error gotin
 	// rcg010206 - see commentary above
 	int args[16];
 	int i;
