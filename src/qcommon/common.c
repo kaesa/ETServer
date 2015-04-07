@@ -98,7 +98,7 @@ cvar_t  *com_cameraMode;
 #if defined( _WIN32 ) && defined( _DEBUG )
 cvar_t  *com_noErrorInterrupt;
 #endif
-cvar_t  *com_recommendedSet;
+//cvar_t  *com_recommendedSet;
 
 cvar_t  *com_watchdog;
 cvar_t  *com_watchdog_cmd;
@@ -2686,7 +2686,7 @@ void Com_Init( char *commandLine ) {
 
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE );
 	com_logosPlaying = Cvar_Get( "com_logosPlaying", "0", CVAR_ROM );
-	com_recommendedSet = Cvar_Get( "com_recommendedSet", "0", CVAR_ARCHIVE );
+	//com_recommendedSet = Cvar_Get( "com_recommendedSet", "0", CVAR_ARCHIVE );
 
 	Cvar_Get( "savegame_loading", "0", CVAR_ROM );
 
@@ -2745,12 +2745,13 @@ void Com_Init( char *commandLine ) {
 	}
 
 	// NERVE - SMF - force recommendedSet and don't do vid_restart if in safe mode
+	/*
 	if ( !com_recommendedSet->integer && !safeMode ) {
 		Com_SetRecommended();
 		Cbuf_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 	}
 	Cvar_Set( "com_recommendedSet", "1" );
-
+*/
 	if ( !com_dedicated->integer ) {
 		//Cvar_Set( "com_logosPlaying", "1" );
 		Cbuf_AddText( "cinematic etintro.roq\n" );

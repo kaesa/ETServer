@@ -442,11 +442,11 @@ it will attempt to load as a system dll
 vm_t *VM_Create( const char *module, int ( *systemCalls )(int *),
 				 vmInterpret_t interpret ) {
 	vm_t        *vm;
-	vmHeader_t  *header;
-	int length;
-	int dataLength;
+	//vmHeader_t  *header;
+	//int length;
+	//int dataLength;
 	int i, remaining;
-	char filename[MAX_QPATH];
+	//char filename[MAX_QPATH];
 
 	if ( !module || !module[0] || !systemCalls ) {
 		Com_Error( ERR_FATAL, "VM_Create: bad parms" );

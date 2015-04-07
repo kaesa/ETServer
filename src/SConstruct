@@ -253,7 +253,7 @@ elif ( BUILD == 'release' ):
 	elif ( OS == 'Darwin' ):
 		OPTCPPFLAGS = []
 	elif ( OS == 'FreeBSD' ):
-		OPTCPPFLAGS = [ '-O3', '-march=i686', '-Winline', '-ffast-math', '-fomit-frame-pointer', '-finline-functions' ]
+		OPTCPPFLAGS = [ '-O3', '-march=i686', '-Winline', '-ffast-math', '-fomit-frame-pointer', '-finline-functions', '-no-integrated-as' ]
 else:
 	print 'Unknown build configuration ' + BUILD
 	sys.exit(0)
@@ -336,7 +336,7 @@ class CopyBins(scons_utils.idSetupBase):
 		for i in source:
 			j = os.path.normpath( os.path.join( os.path.dirname( i.abspath ), '../bin', os.path.basename( i.abspath ) ) )
 			self.SimpleCommand( 'cp ' + i.abspath + ' ' + j )
-			if ( OS == 'Linux' ):
+			if ( OS == 'Linux' or OS == 'FreeBSD' ):
 				self.SimpleCommand( 'strip ' + j )
 			else:
 				# see strip and otool man pages on mac

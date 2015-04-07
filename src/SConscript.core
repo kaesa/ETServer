@@ -43,11 +43,7 @@ md4.c
 msg.c
 net_chan.c
 unzip.c
-vm.c
-vm_interpreted.c"""
-
-if ( cpu == 'x86' ):
-	qcommon_string += " vm_x86.c"
+vm.c"""
 
 qcommon_list = scons_utils.BuildList( 'qcommon', qcommon_string )
 
@@ -154,7 +150,7 @@ elif ( g_os == 'FreeBSD' ):
 	else:
 		local_env.Append( CPPDEFINES = [ 'DEDICATED' ] )
 		local_env.Append( LIBS = [ 'm' ] )
-	g_env.Append(LINKFLAGS=[ os.popen( g_env['CXX'] + ' -print-file-name=libc++.a' ).read().rstrip() ])
+	#g_env.Append(LINKFLAGS=[ os.popen( g_env['CXX'] + ' -print-file-name=libc++.a' ).read().rstrip() ])
 elif ( g_os == 'win32' ):
 	local_env.Append( LIBS = [ 'm', 'winmm', 'wsock32', 'gdi32', 'ole32', 'iphlpapi' ] )
 	if ( local_dedicated == 0 ):
