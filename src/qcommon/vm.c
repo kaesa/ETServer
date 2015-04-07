@@ -332,18 +332,23 @@ Dlls will call this directly
 ============
 */
 int QDECL VM_DllSyscall( int arg, ... ) {
-#if ( ( defined __linux__ ) && ( defined __powerpc__ ) ) || (defined __FreeBSD__) //|| (defined MACOS_X)
+#if defined(__x86_64__) || defined (__llvm__) || ((defined __linux__) && (defined __powerpc__))
+//#if ( ( defined __linux__ ) && ( defined __powerpc__ ) ) || (defined __FreeBSD__) //|| (defined MACOS_X)
 //#pragma error gotin
 	// rcg010206 - see commentary above
-	int args[16];
+	int args[VM_SYSCALL_ARGS];
 	int i;
 	va_list ap;
 
 	args[0] = arg;
 
 	va_start( ap, arg );
+	for (i = 1; i < (sizeof( args ) / sizeof( args[i] )) ; i++) {
+		args[i] = va_arg(ap, intptr_t);
+	}
+/*
 	for ( i = 1; i < sizeof( args ) / sizeof( args[i] ); i++ )
-		args[i] = va_arg( ap, int );
+		args[i] = va_arg( ap, int );*/
 	va_end( ap );
 
 	return currentVM->systemCall( args );
@@ -664,7 +669,7 @@ locals from sp
 #define MAX_STACK   256
 #define STACK_MASK  ( MAX_STACK - 1 )
 
-int QDECL VM_Call( vm_t *vm, int callnum, ... ) {
+int QDECL VM_CallFunc( vm_t *vm, int callnum, ... ) {
 	vm_t    *oldVM;
 	int		r = 0;
 	//rcg010207 see dissertation at top of VM_DllSyscall() in this file.
@@ -689,6 +694,26 @@ int QDECL VM_Call( vm_t *vm, int callnum, ... ) {
 	// if we have a dll loaded, call it directly
 	if ( vm->entryPoint ) {
 		//rcg010207 -  see dissertation at top of VM_DllSyscall() in this file.
+		intptr_t args[VM_SYSCALL_ARGS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		va_list  ap;
+		int      i;
+
+		va_start(ap, callnum);
+		for (i = 0; i < VM_SYSCALL_ARGS; i++) {
+			// We add the end of args point since windows at least just returns random values if there are no args
+			// this way we know that only valid values are sent to the vm
+			args[i] = va_arg(ap, intptr_t);
+
+			if (args[i] == VM_CALL_END) {
+				args[i] = 0;
+				break;
+			}
+		}
+		va_end(ap);
+
+		r = vm->entryPoint(callnum, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+		                   args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
+/*
 #if ( ( defined __linux__ ) && ( defined __powerpc__ ) ) || ( defined MACOS_X )
 		va_start( ap, callnum );
 		for ( i = 0; i < sizeof( args ) / sizeof( args[i] ); i++ )
@@ -704,6 +729,7 @@ int QDECL VM_Call( vm_t *vm, int callnum, ... ) {
 							( &callnum )[4], ( &callnum )[5], ( &callnum )[6], ( &callnum )[7],
 							( &callnum )[8],  ( &callnum )[9],  ( &callnum )[10],  ( &callnum )[11],  ( &callnum )[12] );
 #endif
+* */
 	}/*Q3 interpreted dlls
 	else if ( vm->compiled ) {
 		r = VM_CallCompiled( vm, &callnum );
