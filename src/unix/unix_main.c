@@ -596,10 +596,13 @@ void Sys_UnloadDll( void *dllHandle ) {
 		Com_Printf( "Sys_UnloadDll(NULL)\n" );
 		return;
 	}
-	dlclose( dllHandle );
-	err = dlerror();
-	if ( err != NULL ) {
-		Com_Printf( "Sys_UnloadGame failed on dlclose: \"%s\"!\n", err );
+	if( dlclose( dllHandle ) ) {
+		err = dlerror();
+		if ( err != NULL ) {
+			Com_Printf( "Sys_UnloadGame failed on dlclose: \"%s\"!\n", err );
+		} else {
+			Com_Printf( "Sys_UnloadGame failed on dlclose!\n" );
+		}
 	}
 }
 
@@ -685,16 +688,24 @@ qboolean CopyDLLForMod( char **p_fn, const char* gamedir, const char *pwdpath, c
 
 // TTimo - Wolf MP specific, adding .mp. to shared objects
 char* Sys_GetDLLName( const char *name ) {
-#if defined __i386__
-	return va( "%s.mp.i386.so", name );
-#elif defined __ppc__
-	return va( "%s.mp.ppc.so", name );
-#elif defined __axp__
-	return va( "%s.mp.axp.so", name );
-#elif defined __mips__
-	return va( "%s.mp.mips.so", name );
+#if defined __FreeBSD__
+#  if defined __i386__
+		return va( "%s.mp.fbsd.i386.so", name );
+#  else
+		return va( "%s.mp.fbsd.amd64.so", name );
+#  endif
 #else
-#error Unknown arch
+#  if defined __i386__
+		return va( "%s.mp.i386.so", name );
+#  elif defined __ppc__
+		return va( "%s.mp.ppc.so", name );
+#  elif defined __axp__
+		return va( "%s.mp.axp.so", name );
+#  elif defined __mips__
+		return va( "%s.mp.mips.so", name );
+#  else
+#       error Unknown arch
+#  endif
 #endif
 }
 
